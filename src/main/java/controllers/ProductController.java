@@ -25,14 +25,15 @@ public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String menu = request.getParameter("action");
-        if (menu == null) { //view menu
+        String menu = request.getParameter("menu");
+        
+        if (request.getParameterMap().isEmpty()) { //view menu
             //get all data from database
 
             request.setAttribute("title", "Daftar Produk");
-            ArrayList<Product> prods = new ArrayList<>();
-            prods.add(new Product(1, "Nasi Goreng", 15000));
-            prods.add(new Product(2, "Nasi Mawud", 20000));
+            
+            ArrayList<Product> prods = new Product().get();
+         
             request.setAttribute("list", prods);
 
             request.getRequestDispatcher("view_product.jsp").forward(request, response);
@@ -46,6 +47,15 @@ public class ProductController extends HttpServlet {
             Product p = new Product(2, "Nasi Goreng", 15000);
             request.setAttribute("product", p);
             request.getRequestDispatcher("form_product.jsp").forward(request, response);
+        } else if ("custom".equals(menu)) {
+            
+             request.setAttribute("title", "Dashboard");
+            
+            ArrayList<ArrayList<Object>> prods = new Product().query("SELECT COUNT(*), AVG(price) FROM product");
+            request.setAttribute("list", prods);
+            
+            request.getRequestDispatcher("view_custom.jsp").forward(request, response);
+        
         }
 
     }

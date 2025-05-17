@@ -1,6 +1,8 @@
 models/Product.class
 com/akunerio/testpbo/resources/JakartaEE10Resource.class
 controllers/AuthController.class
+controllers/TestServlet.class
+utils/JDBC.class
 com/akunerio/testpbo/JakartaRestConfiguration.class
 controllers/HomeController.class
 controllers/ProductController.class
