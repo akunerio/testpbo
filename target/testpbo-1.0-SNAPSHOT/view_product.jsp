@@ -20,6 +20,7 @@
                 <th>No</th>
                 <th>Nama</th>
                 <th>Harga</th>
+                <th colspan="2">Aksi</th>
             </tr>
             <%
             ArrayList<Product> prods = (ArrayList<Product>) request.getAttribute("list");
@@ -27,9 +28,16 @@
             for (Product p: prods) {
             %>
             <tr>
-                <th><%= i++ %></th>
-                <th><%= p.getName() %></th>
-                <th><%= p.getPrice() %></th>
+                <td><%= p.getId() %></td>
+                <td><%= p.getName() %></td>
+                <td><%= p.getPrice() %></td>
+                <td><a href="?menu=edit&id=<%= p.getId() %>">Edit</a></td>
+                <td>
+                    <form method="POST" action="product?action=del&id=<%= p.getId() %>">
+                        <button>Hapus</button>
+                    </form>
+                    
+                </td>
             </tr>
             <% } %>
         </table>

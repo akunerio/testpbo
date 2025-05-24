@@ -26,36 +26,44 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
 
         String menu = request.getParameter("menu");
-        
+
         if (request.getParameterMap().isEmpty()) { //view menu
             //get all data from database
 
             request.setAttribute("title", "Daftar Produk");
-            
+
             ArrayList<Product> prods = new Product().get();
-         
+
             request.setAttribute("list", prods);
 
             request.getRequestDispatcher("view_product.jsp").forward(request, response);
+
         } else if ("add".equals(menu)) {
-            request.getRequestDispatcher("form_product.jsp").forward(request, response);
-        
+            request.setAttribute("title", "Tambah Produk");
+            request.getRequestDispatcher("form_product_2.jsp").forward(request, response);
+
         } else if ("edit".equals(menu)) {
             //get one data from database
 
             request.setAttribute("title", "Edit Produk");
-            Product p = new Product(2, "Nasi Goreng", 15000);
+            request.setAttribute("action", "?id=" + request.getParameter("id"));
+            Product p = new Product().find(request.getParameter("id"));
+            if (p == null) {
+                response.sendRedirect("product");
+                return;
+            }
             request.setAttribute("product", p);
-            request.getRequestDispatcher("form_product.jsp").forward(request, response);
+            request.getRequestDispatcher("form_product_2.jsp").forward(request, response);
+
         } else if ("custom".equals(menu)) {
-            
-             request.setAttribute("title", "Dashboard");
-            
+
+            request.setAttribute("title", "Dashboard");
+
             ArrayList<ArrayList<Object>> prods = new Product().query("SELECT COUNT(*), AVG(price) FROM product");
             request.setAttribute("list", prods);
-            
+
             request.getRequestDispatcher("view_custom.jsp").forward(request, response);
-        
+
         }
 
     }
@@ -64,6 +72,30 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String action = request.getParameter("action");
+
+        String id = request.getParameter("id");
+
+        if (id == null) { //insert data
+            Product p = new Product();
+            p.setName(request.getParameter("name"));
+            p.setPrice(Double.parseDouble(request.getParameter("price")));
+            p.insert();
+        } else if(action == null && id != null) {
+            Product p = new Product();
+            p.setId(Integer.parseInt(id));
+            p.setName(request.getParameter("name"));
+            p.setPrice(Double.parseDouble(request.getParameter("price")));
+            p.update();
+        } else if("del".equals(action)) {
+            Product p = new Product().find(id);
+            System.out.print(p.getName());
+            if(p != null){
+                p.delete();
+            }
+        }
+        
+        response.sendRedirect("product");
     }
 
 }

@@ -104,12 +104,37 @@ public class Product extends JDBC {
             while (rs.next()) {
                 res.add(toRow(rs));
             }
-            
+
         } catch (Exception e) {
             setMessage(e.getMessage());
         }
         return res;
     }
-    
 
+    public Product find(String id) {
+        ResultSet rs = getData("SELECT * FROM product WHERE id =" + id);
+        try {
+            if (rs.next()) {
+                return toModel(rs);
+            }
+
+        } catch (Exception e) {
+            setMessage(e.getMessage());
+        }
+
+        return null;
+    }
+
+    public void insert() {
+        runQuery("INSERT INTO product (name, price)"
+                + " VALUES('" + name + "', '" + price + "')");
+    }
+
+    public void update() {
+        runQuery("UPDATE product SET name = '" + name + "', price = '" + price + "' WHERE id = " + id);
+    }
+
+    public void delete() {
+        runQuery("DELETE FROM product WHERE id = " + id);
+    }
 }
